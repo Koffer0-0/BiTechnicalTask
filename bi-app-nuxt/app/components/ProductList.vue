@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+import ProductCard from "./ProductCard.vue";
 const products = ref([
   {
     id: 1,
@@ -94,6 +96,9 @@ const products = ref([
       <div class="mt-4 lg:mt-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
         <div class="lg:col-span-3">
           <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <li v-for="product in products" :key="product.id">
+              <ProductCard :product="product" />
+            </li>
           </ul>
         </div>
       </div>
