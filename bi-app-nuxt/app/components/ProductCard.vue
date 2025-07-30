@@ -6,6 +6,10 @@ defineProps({
   }
 })
 
+const handleAddToCart = (product) => {
+  //   realization here
+  console.log(product)
+}
 </script>
 
 <template>
@@ -27,6 +31,11 @@ defineProps({
         <span class="tracking-wider text-gray-900 text-lg"> {{ product.price }} KZT </span>
       </p>
 
+      <button
+          @click="handleAddToCart(product)"
+          class="px-6 py-1 bg-teal-600 text-white text-sm font-medium rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+        TO CART
+      </button>
     </div>
   </a>
 </template>
