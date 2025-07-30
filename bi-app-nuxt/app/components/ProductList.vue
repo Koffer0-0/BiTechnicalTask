@@ -91,6 +91,12 @@ const products = ref([
         </button>
       </div>
 
+      <div class="mt-4 lg:mt-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
+        <div class="lg:col-span-3">
+          <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 </template>
