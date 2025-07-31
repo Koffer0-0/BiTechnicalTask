@@ -1,66 +1,71 @@
 <script setup lang="ts">
 
-defineProps({
-  products: Array
+const props = defineProps({
+  products: {
+    type: Array,
+    required: true
+  }
+})
+const emit = defineEmits(['filter-change'])
+
+const { products } = toRefs(props)
+
+const minPrice = ref()
+const maxPrice = ref()
+const searchQuery = ref('')
+const sortOption = ref('')
+
+const filteredAndSortedProducts = computed(() => {
+  let result = [...products.value]
+
+  if (searchQuery.value.trim() !== '') {
+    result = result.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
+
+  const min = parseFloat(minPrice.value)
+  const max = parseFloat(maxPrice.value)
+
+  if (!isNaN(min)) {
+    result = result.filter(product => product.price >= min)
+  }
+  if (!isNaN(max)) {
+    result = result.filter(product => product.price <= max)
+  }
+
+  if (sortOption.value) {
+    const [sortByRaw, orderRaw] = sortOption.value.split(',')
+    const sortBy = sortByRaw.trim().toLowerCase()
+    const order = orderRaw.trim().toLowerCase()
+
+    result.sort((a, b) => {
+      const aVal = sortBy === 'price' ? a.price : a.name.toLowerCase()
+      const bVal = sortBy === 'price' ? b.price : b.name.toLowerCase()
+
+      if (aVal < bVal) return order === 'asc' ? -1 : 1
+      if (aVal > bVal) return order === 'asc' ? 1 : -1
+      return 0
+    })
+  }
+
+  return result
 })
 
-const minPrice = ref('')
-const maxPrice = ref('')
-const searchQuery = ref('')
-const sortOption = ref('');
+let debounceTimeout
+watch([minPrice, maxPrice, searchQuery, sortOption], () => {
+  clearTimeout(debounceTimeout)
+  debounceTimeout = setTimeout(() => {
+    emit('filter-change', filteredAndSortedProducts.value)
+  }, 300)
+}, { immediate: true })
 
-const {
-  products,
-  handleFetchProducts,
-  filterProducts,
-  searchProducts,
-} = useProduct()
-
-const resetFilters = async () => {
-  minPrice.value = '';
-  maxPrice.value = '';
-  searchQuery.value = '';
-};
-
-async function applySort() {
-  if (!sortOption.value) return;
-  const [sortByRaw, orderRaw] = sortOption.value.split(',');
-  const sortBy = sortByRaw.trim().toLowerCase();
-  const order = orderRaw.trim().toLowerCase();
-
-  await filterProducts({
-    minPrice: minPrice.value,
-    maxPrice: maxPrice.value,
-    sortBy,
-    order,
-    search: searchQuery.value,
-  });
+const resetFilters = () => {
+  minPrice.value = ''
+  maxPrice.value = ''
+  searchQuery.value = ''
+  sortOption.value = ''
 }
-
-watch([minPrice, maxPrice], ([newMin, newMax]) => {
-  setTimeout(async () => {
-    await filterProducts({
-      minPrice: newMin,
-      maxPrice: newMax,
-      sortBy: sortOption.value?.split(',')[0]?.trim().toLowerCase(),
-      order: sortOption.value?.split(',')[1]?.trim().toLowerCase(),
-      search: searchQuery.value,
-    });
-  }, 500);
-});
-
-watch(searchQuery, (newSearch) => {
-  setTimeout(async () => {
-    await filterProducts({
-      minPrice: minPrice.value,
-      maxPrice: maxPrice.value,
-      sortBy: sortOption.value?.split(',')[0]?.trim().toLowerCase(),
-      order: sortOption.value?.split(',')[1]?.trim().toLowerCase(),
-      search: newSearch,
-    });
-  }, 500);
-});
-
 </script>
 
 <template>
@@ -91,8 +96,8 @@ watch(searchQuery, (newSearch) => {
 
       <select id="SortBy" class="h-10 rounded border-gray-300 text-sm" v-model="sortOption" @change="applySort">
         <option>Sort By</option>
-        <option value="Title, DESC">Title, DESC</option>
-        <option value="Title, ASC">Title, ASC</option>
+        <option value="name, DESC">Name, DESC</option>
+        <option value="name, ASC">Name, ASC</option>
         <option value="Price, DESC">Price, DESC</option>
         <option value="Price, ASC">Price, ASC</option>
       </select>
