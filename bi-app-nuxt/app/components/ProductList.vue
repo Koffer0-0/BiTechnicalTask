@@ -57,11 +57,12 @@ const products = ref([
     id: 8,
     name: "Cable Knit Cardigan\n",
     imageURL: "https://shoptommy.scene7.com/is/image/ShopTommy/XM04543_L8Q_main?wid=1487&qlt=80%2C0&resMode=sharp2&op_usm=0.9%2C1.0%2C8%2C0&iccEmbed=0&fmt=webp",
-    imageAlt: "",
     price: 42300,
   },
 
-])
+onMounted(() => {
+  handleFetchProducts()
+})
 </script>
 
 <template>
@@ -96,7 +97,7 @@ const products = ref([
       </div>
 
       <div class="mt-4 lg:mt-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
-        <FilterPanel/>
+        <FilterPanel :products="products"/>
 
         <div class="lg:col-span-3">
           <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
