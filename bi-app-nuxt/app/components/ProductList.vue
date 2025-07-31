@@ -4,10 +4,20 @@ import ProductCard from "./ProductCard.vue";
 import FilterPanel from "./FilterPanel.vue";
 
 const { products, handleFetchProducts } = useProduct()
+const filteredProducts = ref([])
 
 onMounted(() => {
-  handleFetchProducts()
+  initList()
 })
+
+async function initList() {
+  await handleFetchProducts()
+  filteredProducts.value = [...products.value]
+}
+
+const handleFilterChange = (newFilteredList: any[]) => {
+  filteredProducts.value = newFilteredList
+}
 </script>
 
 <template>
@@ -42,11 +52,12 @@ onMounted(() => {
       </div>
 
       <div class="mt-4 lg:mt-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
-        <FilterPanel :products="products"/>
-
+        <FilterPanel :products="products"
+                     @filter-change="handleFilterChange"
+        />
         <div class="lg:col-span-3">
           <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <li v-for="product in products" :key="product.id">
+            <li v-for="product in filteredProducts" :key="product.id">
               <ProductCard :product="product" />
             </li>
           </ul>
