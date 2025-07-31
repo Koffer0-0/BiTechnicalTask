@@ -1,4 +1,4 @@
-import {getAllProducts, getFilteredProducts, getProduct, makeSearch} from "../services/api.js";
+import {getAllProducts, getProduct } from "../services/api.js";
 
 export function useProduct() {
     const products = ref([])
@@ -20,40 +20,9 @@ export function useProduct() {
         }
     }
 
-    const searchProducts = async (params) => {
-        try {
-            const response = await makeSearch(params)
-            products.value = response
-        } catch (err) {
-            console.log(err);
-        }
-    }
-    const filterProducts = async ({
-                                      minPrice = '',
-                                      maxPrice = '',
-                                      sortBy = '',
-                                      order = '',
-                                      search = ''
-                                  } = {}) => {
-        try {
-            const response = await getFilteredProducts({
-                minPrice,
-                maxPrice,
-                sortBy,
-                order,
-                search,
-            });
-            products.value = response;
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     return {
         products,
         handleFetchProductById,
         handleFetchProducts,
-        filterProducts,
-        searchProducts,
     }
 }
