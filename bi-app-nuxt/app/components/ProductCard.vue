@@ -13,7 +13,7 @@ const handleAddToCart = (product) => {
 </script>
 
 <template>
-  <a href="#" class="group block overflow-hidden">
+  <NuxtLink :to="{ name: 'product-id', params: { id: product.id }}" class="group block overflow-hidden">
     <img
         :src="product.imageURL"
         :alt="product.imageAlt"
@@ -37,7 +37,7 @@ const handleAddToCart = (product) => {
         TO CART
       </button>
     </div>
-  </a>
+  </NuxtLink>
 </template>
 
 <style scoped>
