@@ -6,9 +6,9 @@ defineProps({
   }
 })
 
+const {addToCart} = useCart()
 const handleAddToCart = (product) => {
-  //   realization here
-  console.log(product)
+  addToCart(product)
 }
 </script>
 
